@@ -68,8 +68,10 @@ test-acceptance: check-deps prepare ## Run all acceptance tests
 	docker-compose down
 
 
-test-integration: check-deps ## Run all integration tests
-	@./scripts/run-integration-test.sh
+test-integration: check-deps prepare ## Run all integration tests
+	docker-compose -f docker-compose.integration.yml up test
+	docker-compose -f docker-compose.integration.yml down
+
 
 clean: check-deps ## Remove all build, test, coverage and Python artifacts
 	@$(DC) up clean
