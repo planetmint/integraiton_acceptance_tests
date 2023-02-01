@@ -12,6 +12,7 @@ import base58
 import sha3
 from planetmint_cryptoconditions import Ed25519Sha256, ThresholdSha256
 from planetmint_driver.crypto import generate_keypair
+from ipld import multihash, marshal
 
 # Import helper to deal with multiple nodes
 from .helper.hosts import Hosts
@@ -44,7 +45,7 @@ def test_threshold():
     # high rents anymore. Bob suggests to get a dish washer for the
     # kitchen. Alice agrees and here they go, creating the asset for their
     # dish washer.
-    dw_asset = [{"data": {"dish washer": {"serial_number": 1337}}}]
+    dw_asset = [{"data": multihash(marshal({"dish washer": {"serial_number": 1337}}))}]
 
     # Create subfulfillments
     alice_ed25519 = Ed25519Sha256(public_key=base58.b58decode(alice.public_key))
@@ -81,11 +82,11 @@ def test_threshold():
     # Assemble the handcrafted transaction
     handcrafted_dw_tx = {
         "operation": "CREATE",
-        "asset": dw_asset,
+        "assets": dw_asset,
         "metadata": None,
         "outputs": (output,),
         "inputs": (input_,),
-        "version": "2.0",
+        "version": "3.0",
         "id": None,
     }
 
@@ -138,7 +139,7 @@ def test_weighted_threshold():
 
     alice, bob, carol = generate_keypair(), generate_keypair(), generate_keypair()
 
-    assets = [{"data": {"trashcan": {"animals": ["racoon_1", "racoon_2"]}}}]
+    assets = [{"data": multihash(marshal({"trashcan": {"animals": ["racoon_1", "racoon_2"]}}))}]
 
     alice_ed25519 = Ed25519Sha256(public_key=base58.b58decode(alice.public_key))
     bob_ed25519 = Ed25519Sha256(public_key=base58.b58decode(bob.public_key))
@@ -176,11 +177,11 @@ def test_weighted_threshold():
     # Assemble the handcrafted transaction
     handcrafted_tx = {
         "operation": "CREATE",
-        "asset": assets,
+        "assets": assets,
         "metadata": None,
         "outputs": (output,),
         "inputs": (input_,),
-        "version": "2.0",
+        "version": "3.0",
         "id": None,
     }
 
@@ -262,7 +263,7 @@ def test_weighted_threshold():
         "metadata": None,
         "outputs": (transfer_output,),
         "inputs": (transfer_input_,),
-        "version": "2.0",
+        "version": "3.0",
         "id": None,
     }
 

@@ -26,6 +26,7 @@ from uuid import uuid4
 from websocket import create_connection
 
 from planetmint_driver.crypto import generate_keypair
+from ipld import multihash, marshal
 
 # import helper to manage multiple nodes
 from .helper.hosts import Hosts
@@ -90,7 +91,7 @@ def test_stream():
     for _ in range(10):
         tx = pm.transactions.fulfill(
             pm.transactions.prepare(
-                operation="CREATE", signers=alice.public_key, assets=[{"data": {"uuid": str(uuid4())}}]
+                operation="CREATE", signers=alice.public_key, assets=[{"data": multihash(marshal({"uuid": str(uuid4())}))}]
             ),
             private_keys=alice.private_key,
         )

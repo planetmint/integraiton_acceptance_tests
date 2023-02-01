@@ -21,6 +21,7 @@ import time
 
 # For this test case we need import and use the Python driver
 from planetmint_driver.crypto import generate_keypair
+from ipld import multihash, marshal
 
 # Import helper to deal with multiple nodes
 from .helper.hosts import Hosts
@@ -39,7 +40,7 @@ def test_multiple_owners():
     # high rents anymore. Bob suggests to get a dish washer for the
     # kitchen. Alice agrees and here they go, creating the asset for their
     # dish washer.
-    dw_asset = [{"data": {"dish washer": {"serial_number": 1337}}}]
+    dw_asset = [{"data": multihash(marshal({"dish washer": {"serial_number": 1337}}))}]
 
     # They prepare a `CREATE` transaction. To have multiple owners, both
     # Bob and Alice need to be the recipients.
@@ -77,7 +78,7 @@ def test_multiple_owners():
 
     # Alice and Bob prepare the transaction to transfer the dish washer to
     # Carol.
-    transfer_assets = [{"id": dw_id}]
+    transfer_assets = [dw_id]
 
     output_index = 0
     output = fulfilled_dw_tx["outputs"][output_index]

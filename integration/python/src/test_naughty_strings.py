@@ -22,6 +22,7 @@ import pytest
 # For this test case we import and use the Python Driver.
 from planetmint_driver.crypto import generate_keypair
 from planetmint_driver.exceptions import BadRequest
+from ipld import multihash, marshal
 
 # import helper to manage multiple nodes
 from .helper.hosts import Hosts
@@ -116,8 +117,8 @@ def send_naughty_tx(assets, metadata):
 @pytest.mark.parametrize("naughty_string", naughty_strings, ids=naughty_strings)
 def test_naughty_keys(naughty_string):
 
-    assets = [{"data": {naughty_string: "nice_value"}}]
-    metadata = {naughty_string: "nice_value"}
+    assets = [{"data": multihash(marshal({naughty_string: "nice_value"}))}]
+    metadata = multihash(marshal({naughty_string: "nice_value"}))
 
     send_naughty_tx(assets, metadata)
 
@@ -125,7 +126,7 @@ def test_naughty_keys(naughty_string):
 @pytest.mark.parametrize("naughty_string", naughty_strings, ids=naughty_strings)
 def test_naughty_values(naughty_string):
 
-    assets = [{"data": {"nice_key": naughty_string}}]
-    metadata = {"nice_key": naughty_string}
+    assets = [{"data": multihash(marshal({"nice_key": naughty_string}))}]
+    metadata = multihash(marshal({"nice_key": naughty_string}))
 
     send_naughty_tx(assets, metadata)

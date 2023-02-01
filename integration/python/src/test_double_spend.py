@@ -11,6 +11,7 @@ import queue
 
 import planetmint_driver.exceptions
 from planetmint_driver.crypto import generate_keypair
+from ipld import multihash, marshal
 
 from .helper.hosts import Hosts
 
@@ -24,7 +25,7 @@ def test_double_create():
 
     tx = pm.transactions.fulfill(
         pm.transactions.prepare(
-            operation="CREATE", signers=alice.public_key, assets=[{"data": {"uuid": str(uuid4())}}]
+            operation="CREATE", signers=alice.public_key, assets=[{"data": multihash(marshal({"uuid": str(uuid4())}))}]
         ),
         private_keys=alice.private_key,
     )
