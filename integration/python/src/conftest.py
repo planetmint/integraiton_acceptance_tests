@@ -4,6 +4,8 @@
 # Code is Apache-2.0 and docs are CC-BY-4.0
 
 import pytest
+import json
+from zenroom import zencode_exec
 
 CONDITION_SCRIPT = """Scenario 'ecdh': create the signature of an object
     Given I have the 'keyring'
@@ -19,18 +21,23 @@ FULFILL_SCRIPT = """Scenario 'ecdh': Bob verifies the signature from Alice
     Then print the string 'ok'"""
 
 SK_TO_PK = """Scenario 'ecdh': Create the keypair
+    Scenario 'reflow': Create the key
     Given that I am known as '{}'
     Given I have the 'keyring'
     When I create the ecdh public key
     When I create the bitcoin address
+    When I create the reflow public key
     Then print my 'ecdh public key'
-    Then print my 'bitcoin address'"""
+    Then print my 'bitcoin address'
+    Then print my 'reflow public key'"""
 
 GENERATE_KEYPAIR = """Scenario 'ecdh': Create the keypair
+    Scenario 'reflow': Create the key
     Given that I am known as 'Pippo'
     When I create the ecdh key
     When I create the bitcoin key
-    Then print data"""
+    When I create the reflow key
+    Then print keyring"""
 
 INITIAL_STATE = {"also": "more data"}
 SCRIPT_INPUT = {
@@ -84,3 +91,24 @@ def zenroom_script_input():
 @pytest.fixture
 def zenroom_data():
     return ZENROOM_DATA
+
+@pytest.fixture
+def alice(gen_key_zencode):
+    alice = json.loads(zencode_exec(gen_key_zencode).output)
+    return alice
+
+
+@pytest.fixture
+def bob(gen_key_zencode):
+    bob = json.loads(zencode_exec(gen_key_zencode).output)
+    return bob
+
+@pytest.fixture
+def zenroom_public_keys(gen_key_zencode, secret_key_to_private_key_zencode, alice, bob):
+    zen_public_keys = json.loads(
+        zencode_exec(secret_key_to_private_key_zencode.format("Alice"), keys=json.dumps(alice)).output
+    )
+    zen_public_keys.update(
+        json.loads(zencode_exec(secret_key_to_private_key_zencode.format("Bob"), keys=json.dumps(bob)).output)
+    )
+    return zen_public_keys
