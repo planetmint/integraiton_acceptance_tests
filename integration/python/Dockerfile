@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9-slim
 
 RUN apt-get update \
     && pip install -U pip \
@@ -7,7 +7,7 @@ RUN apt-get update \
 RUN apt-get install -y vim 
 RUN apt-get update
 RUN apt-get install -y build-essential cmake openssh-client openssh-server git
-RUN apt-get install -y zsh
+RUN apt-get install -y zsh curl
 
 RUN mkdir -p /src
 RUN pip install --upgrade meson ninja
@@ -16,4 +16,5 @@ RUN pip install --upgrade \
     pycco \
     websocket-client~=0.47.0 \
     planetmint-driver>=9.2.0 \
-    blns
+    blns \
+    planetmint-ipld>=0.0.3
