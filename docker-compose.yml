@@ -68,3 +68,9 @@ services:
     environment:
       - PLANETMINT_ENDPOINT=planetmint
 
+  # Remove all build, test, coverage and Python artifacts
+  clean:
+    image: alpine
+    command: /bin/sh -c "./planetmint/scripts/clean.sh"
+    volumes:
+      - $PWD:/planetmint
